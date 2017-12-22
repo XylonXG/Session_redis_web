@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="Session_redis_web:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="Session_redis_web.war">
+      <element id="artifact" artifact-name="Session_redis_web:war exploded" />
+    </root>
+  </artifact>
+</component>

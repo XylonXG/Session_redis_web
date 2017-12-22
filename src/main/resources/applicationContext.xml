@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd
+">
+    <context:property-placeholder location="classpath:redis.properties"></context:property-placeholder>
+    <!--使用redis需要注解-->
+    <context:annotation-config></context:annotation-config>
+
+    <!--将session放到redis当中-->
+    <bean id="redisHttpSessionConfiguration" class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration">
+        <!--session过期时间-->
+        <property name="maxInactiveIntervalInSeconds" value="6000"></property>
+    </bean>
+
+    <!--redis连接池-->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <!--最大的连接数-->
+        <property name="maxTotal" value="${redis.maxTotal}"></property>
+        <!--最大空闲数-->
+        <property name="minIdle" value="${redis.maxIdle}"></property>
+        <!--最大等待时间-->
+        <property name="maxWaitMillis" value="${redis.maxWaitMillis}"></property>
+        <!--连接时 检测是否成功-->
+        <property name="testOnBorrow" value="${redis.testOnBorrow}"></property>
+    </bean>
+
+    <!--redis连接工厂-->
+    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="poolConfig" ref="jedisPoolConfig"></property>
+        <property name="hostName" value="${redis.hostName}"></property>
+        <property name="port" value="${redis.port}"></property>
+        <property name="timeout" value="${redis.timeout}"></property>
+    </bean>
+
+    <!--spring Session 不执行config命令-->
+    <util:constant static-field="org.springframework.session.data.redis.config.ConfigureRedisAction.NO_OP"></util:constant>
+
+</beans>
